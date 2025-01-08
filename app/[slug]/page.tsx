@@ -4,12 +4,20 @@ import ProductImages from "@/Components/ProductImages";
 import { WixCLientServer } from "@/lib/WixCLientServer";
 import { notFound } from "next/navigation";
 
-const SlugPage = async ({ params }: { params: { slug: string } }) => {
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
+const SlugPage = async ({ params }: Promise<PageProps>) => {
+  const resolvedParams = await params;
+
   const WixClient = await WixCLientServer();
 
   const { items } = await WixClient.products
     .queryProducts()
-    .eq("slug", `${params.slug}`)
+    .eq("slug", `${resolvedParams.slug}`)
     .find();
 
   const product = items[0];
